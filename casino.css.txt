@@ -1,0 +1,79 @@
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #4b0082, #9400d3);
+    background-size: 300% 300%;
+    animation: rainbowBackground 10s ease infinite;
+    color: white; /* 기본 텍스트 색상 */
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+@keyframes rainbowBackground {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+h1, h2 {
+    color: transparent;
+    background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #4b0082, #9400d3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rainbowText 5s ease infinite;
+}
+
+@keyframes rainbowText {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+
+#playerArea, #adminArea {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    margin-top: 20px;
+    color: black; /* 박스 안 글자 색상을 검정색으로 설정 */
+}
+
+input[type="text"], input[type="number"], input[type="password"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: calc(100% - 22px);
+    margin-bottom: 10px;
+}
+
+button {
+    background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #4b0082, #9400d3);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+.player {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    color: black; /* 플레이어 정보의 글자 색상을 검정색으로 설정 */
+}
+
+.admin-message {
+    color: #ff5722;
+    margin-top: 10px;
+}
+
+#adminLoginArea {
+    display: none;
+    margin-top: 20px;
+}
