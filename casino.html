@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>casino</title>
+    <link rel="stylesheet" href="casino.css">
+</head>
+<body>
+    <h1>카지노에 오신 여러분 환영합니다! <br><h3>재미있는 시간 보내시길 바랍니다</h3></h1>
+    
+    <label for="playerName">이름을 입력하세요:</label>
+    <input type="text" id="playerName" />
+    <button onclick="joinGame()">게임 참여</button>
+
+    <button onclick="toggleAdminLogin()">관리자 로그인</button>
+    <div id="adminLoginArea">
+        <label for="adminPassword">비밀번호 입력:</label>
+        <input type="password" id="adminPassword" />
+        <button onclick="checkAdmin()">로그인</button>
+    </div>
+
+    <div id="playerArea" style="display:none;">
+        <h2>플레이어 정보</h2>
+        <div id="players"></div>
+        <button onclick="rollDice()">주사위 굴리기</button>
+    </div>
+
+    <div id="adminArea" style="display:none;">
+        <h2>관리자 권한</h2>
+        <label for="adminMoney">돈을 줄 금액:</label>
+        <input type="number" id="adminMoney" min="0" />
+        <button onclick="giveMoney()">돈 주기</button>
+        <div class="admin-message">관리자 권한으로만 사용할 수 있습니다.</div>
+    </div>
+
+    <script>
+        let players = {};
+        let currentPlayer;
+        const startMoney = 1000000;
+        let isAdmin = false;
+
+        function joinGame() {
+            const playerName = document.getElementById("playerName").value.trim();
+            if (playerName === "") {
+                alert("이름을 입력하세요.");
+                return;
+            }
+            currentPlayer = playerName;
+            players[playerName] = { money: startMoney, wins: 0, losses: 0 };
+            document.getElementById("playerArea").style.display = "block";
+            document.getElementById("playerName").style.display = "none";
+            updatePlayerInfo();
+        }
+
+        function toggleAdminLogin() {
+            const adminLoginArea = document.getElementById("adminLoginArea");
+            adminLoginArea.style.display = adminLoginArea.style.display === "none" ? "block" : "none";
+        }
+
+        function checkAdmin() {
+            const password = document.getElementById("adminPassword").value;
+            if (password === "1111") {
+                isAdmin = true;
+                document.getElementById("adminArea").style.display = "block";
+                document.getElementById("adminLoginArea").style.display = "none"; // 로그인 후 닫기
+                alert("관리자 로그인 성공!");
+            } else {
+                alert("비밀번호가 잘못되었습니다.");
+            }
+        }
+
+        function updatePlayerInfo() {
+            const playersDiv = document.getElementById("players");
+            playersDiv.innerHTML = ""; // Clear previous info
+            for (const player in players) {
+                playersDiv.innerHTML += `<div class="player">${player}: ${players[player].money}원 (승: ${players[player].wins}, 패: ${players[player].losses})</div>`;
+            }
+        }
+
+        function rollDice() {
+            if (!currentPlayer) return;
+
+            const betAmount = parseInt(prompt("배팅 금액을 입력하세요:"));
+            if (isNaN(betAmount) || betAmount <= 0 || betAmount > players[currentPlayer].money) {
+                alert("유효한 배팅 금액을 입력하세요.");
+                return;
+            }
+
+            const dice1 = roll();
+            const dice2 = roll();
+            const dice3 = roll();
+            const result = dice1 + dice2 + dice3;
+
+            const select = prompt("업(1) 또는 다운(2)을 선택하세요:");
+            const winCondition = (result >= 11 && select == 1) || (result < 11 && select == 2);
+
+            if (winCondition) {
+                alert("축하합니다! 이겼습니다.");
+                players[currentPlayer].money += betAmount * 2; // 승리 시 배팅 금액의 2배 지급
+                players[currentPlayer].wins++;
+            } else {
+                alert("아쉽지만 패배했습니다.");
+                players[currentPlayer].money -= betAmount; // 패배 시 배팅 금액 차감
+                players[currentPlayer].losses++;
+            }
+
+            updatePlayerInfo();
+            checkGameOver();
+        }
+
+        function roll() {
+            return Math.floor(Math.random() * 6) + 1;
+        }
+
+        function checkGameOver() {
+            if (players[currentPlayer].money <= 0) {
+                alert(`${currentPlayer}님, 돈을 모두 소진하셨습니다!`);
+                delete players[currentPlayer];
+                updatePlayerInfo();
+                document.getElementById("playerArea").style.display = "none";
+            }
+        }
+
+        function giveMoney() {
+            if (!isAdmin) {
+                alert("관리자 권한이 없습니다.");
+                return;
+            }
+
+            const amount = parseInt(document.getElementById("adminMoney").value);
+            if (isNaN(amount) || amount <= 0) {
+                alert("유효한 금액을 입력하세요.");
+                return;
+            }
+            const playerName = prompt("돈을 줄 플레이어 이름을 입력하세요:");
+            if (players[playerName]) {
+                players[playerName].money += amount;
+                alert(`${playerName}에게 ${amount}원이 추가되었습니다.`);
+                updatePlayerInfo();
+            } else {
+                alert("존재하지 않는 플레이어입니다.");
+            }
+        }
+    </script>
+</body>
+</html>
+
